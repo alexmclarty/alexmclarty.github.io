@@ -10,13 +10,15 @@ Hacky POC experimenting with geojson.
 
 # Rough process
 
-- Get sample river data from either OSM or https://overpass-turbo.eu
-- Save file
-- Load into map (currently hardcoded)
-- Do stuff with it
+- Get sample river data from either OSM/https://overpass-turbo.eu
+- Load into https://geojson.io
+- Remove features
+- Add into array (currently hardcoded)
 
 # Useful resources
 
 - https://stackoverflow.com/questions/38483868/leaflet-js-draw-line-along-rivers-between-two-points
 - https://leafletjs.com/examples/quick-start/
 - https://leafletjs.com/examples/geojson/
+
+- https://geojson.io/
