@@ -15,6 +15,12 @@ Hacky POC experimenting with geojson.
 - Remove features
 - Add into array (currently hardcoded)
 
+# Thoughts on how to manage the data
+
+- OSM has continent, country, region, river...and some features
+- features appear to be tourist/waterfall, some other stuff
+- not specific to kayaking...
+
 # Useful resources
 
 - https://stackoverflow.com/questions/38483868/leaflet-js-draw-line-along-rivers-between-two-points

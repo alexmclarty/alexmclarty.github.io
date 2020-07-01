@@ -25787,9 +25787,17 @@ const geoJsonData = {
   ]
 }
 
+const userGeoJsonTemplate = {
+  "type": "FeatureCollection",
+  "features": []
+}
+
+const userGeoJSONKey = 'userGeoJSON'
+
 const lat = 55.012581
 const lon = -1.450946
 const mymap = L.map('mapid').setView([lat, lon], 13);
+
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
@@ -25807,3 +25815,31 @@ L.geoJson(geoJsonData, {
         }
     }
 ).addTo(mymap)
+
+const storedGeoJson = localStorage.getItem(userGeoJSONKey)
+if (!storedGeoJson) {
+  console.log('No user GeoJSON found. Creating in localStorage...')
+  localStorage.setItem(userGeoJSONKey, JSON.stringify(userGeoJsonTemplate))
+  console.log('Created user GeoJSON in localStorage!')
+} else {
+  console.log('Found user GeoJSON in localStorage, adding to map.')
+  L.geoJson(JSON.parse(storedGeoJson)).addTo(mymap);
+}
+
+
+function AddPoint(e) {
+  console.log(e)
+  const existingUserGeoJson = JSON.parse(localStorage.getItem(userGeoJSONKey))
+  // TODO if a user deleted localStorage, this bombs.
+  existingUserGeoJson.features.push({
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [e.latlng.lng, e.latlng.lat]
+  }})
+  localStorage.setItem(userGeoJSONKey, JSON.stringify(existingUserGeoJson));
+  L.geoJson(existingUserGeoJson).addTo(mymap);
+}
+
+mymap.on('click', AddPoint);
+
