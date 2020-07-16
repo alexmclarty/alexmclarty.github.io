@@ -5,3 +5,8 @@ html, body, #mapid {
     margin: 0;
     font-family: Helvetica, sans-serif;
 }
+
+.popUp li {
+    padding-left: 0;
+    list-style: none;
+}

@@ -25783,6 +25783,42 @@ const geoJsonData = {
         ]
       },
       "id": "way/742333999"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "name": "Low Force",
+        "grade": 3,
+        "hazard": "yes",
+        "featureType": "waterfall"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.151489704847336,
+          54.64689781455952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        // "marker-color": "#7e7e7e",
+        // "marker-size": "medium",
+        // "marker-symbol": "",
+        "grade": 3,
+        "featureType": "rapid"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.1510055661201477,
+          54.64626926464677
+        ]
+      }
     }
   ]
 }
@@ -25794,11 +25830,11 @@ const userGeoJsonTemplate = {
 
 const userGeoJSONKey = 'userGeoJSON'
 
-const lat = 55.012581
-const lon = -1.450946
+const lat = 54.55972074357376
+const lon = -1.8676757812500002
 const mymap = L.map('mapid').setView([lat, lon], 13);
 
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+const mapbox = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox/streets-v11',
@@ -25807,39 +25843,60 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2s3MGYyaDllMWVmdzNubXZwZTVydGJ5NyJ9.bOoi4juLS82_7BMYrGbdeg'
 }).addTo(mymap);
 
-L.geoJson(geoJsonData, {
-        onEachFeature: (feature, layer) => {
-            if (feature.properties && feature.geometry.type === 'Point') {
-                layer.bindPopup(JSON.stringify(feature.properties));
-            }
-        }
+const PopUp = function(properties) {
+  return `<div class='popUp'>
+    <ul>
+       <li>Name: ${properties.name}</li>
+       <li>Type: ${properties.featureType}</li>
+       <li>Grade: ${properties.grade}</li>
+    </ul>
+   </div>`
+}
+
+const layer = L.geoJson(geoJsonData, {
+  onEachFeature: (feature, layer) => {
+    if (feature.properties && feature.geometry.type === 'Point') {
+      layer.bindPopup(PopUp(feature.properties));
     }
+  }
+}
 ).addTo(mymap)
 
-const storedGeoJson = localStorage.getItem(userGeoJSONKey)
-if (!storedGeoJson) {
-  console.log('No user GeoJSON found. Creating in localStorage...')
-  localStorage.setItem(userGeoJSONKey, JSON.stringify(userGeoJsonTemplate))
-  console.log('Created user GeoJSON in localStorage!')
-} else {
-  console.log('Found user GeoJSON in localStorage, adding to map.')
-  L.geoJson(JSON.parse(storedGeoJson)).addTo(mymap);
-}
+const baseMaps = {
+    "Map": mapbox
+};
+
+const overlay = {
+    "Rivers": layer
+};
+
+L.control.layers(baseMaps, overlay).addTo(mymap);
+
+// const storedGeoJson = localStorage.getItem(userGeoJSONKey)
+// if (!storedGeoJson) {
+//   console.log('No user GeoJSON found. Creating in localStorage...')
+//   localStorage.setItem(userGeoJSONKey, JSON.stringify(userGeoJsonTemplate))
+//   console.log('Created user GeoJSON in localStorage!')
+// } else {
+//   console.log('Found user GeoJSON in localStorage, adding to map.')
+//   L.geoJson(JSON.parse(storedGeoJson)).addTo(mymap);
+// }
 
 
-function AddPoint(e) {
-  console.log(e)
-  const existingUserGeoJson = JSON.parse(localStorage.getItem(userGeoJSONKey))
-  // TODO if a user deleted localStorage, this bombs.
-  existingUserGeoJson.features.push({
-  "type": "Feature",
-  "geometry": {
-    "type": "Point",
-    "coordinates": [e.latlng.lng, e.latlng.lat]
-  }})
-  localStorage.setItem(userGeoJSONKey, JSON.stringify(existingUserGeoJson));
-  L.geoJson(existingUserGeoJson).addTo(mymap);
-}
+// function AddPoint(e) {
+//   console.log(e)
+//   // const existingUserGeoJson = JSON.parse(localStorage.getItem(userGeoJSONKey))
+//   // // TODO if a user deleted localStorage, this bombs.
+//   // existingUserGeoJson.features.push({
+//   // "type": "Feature",
+//   // "geometry": {
+//   //   "type": "Point",
+//   //   "coordinates": [e.latlng.lng, e.latlng.lat]
+//   // }})
+//   // localStorage.setItem(userGeoJSONKey, JSON.stringify(existingUserGeoJson));
+//   // L.geoJson(existingUserGeoJson).addTo(mymap);
+// }
 
-mymap.on('click', AddPoint);
+
+// mymap.on('click', AddPoint);
 
