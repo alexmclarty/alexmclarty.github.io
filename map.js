@@ -25823,12 +25823,12 @@ const geoJsonData = {
   ]
 }
 
-const userGeoJsonTemplate = {
-  "type": "FeatureCollection",
-  "features": []
-}
-
-const userGeoJSONKey = 'userGeoJSON'
+// const userGeoJsonTemplate = {
+//   "type": "FeatureCollection",
+//   "features": []
+// }
+//
+// const userGeoJSONKey = 'userGeoJSON'
 
 const lat = 54.55972074357376
 const lon = -1.8676757812500002
@@ -25859,15 +25859,26 @@ const layer = L.geoJson(geoJsonData, {
       layer.bindPopup(PopUp(feature.properties));
     }
   }
-}
-).addTo(mymap)
+}).addTo(mymap)
+
+const regions = L.geoJson({
+  "type": "FeatureCollection",
+  "features": []
+}, {
+  onEachFeature: (feature, layer) => {
+    if (feature.properties && feature.geometry.type === 'Point') {
+      layer.bindPopup(PopUp(feature.properties));
+    }
+  }
+}).addTo(mymap)
 
 const baseMaps = {
     "Map": mapbox
 };
 
 const overlay = {
-    "Rivers": layer
+    "Rivers": layer,
+    "Regions": regions
 };
 
 L.control.layers(baseMaps, overlay).addTo(mymap);
