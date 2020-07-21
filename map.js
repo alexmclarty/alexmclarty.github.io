@@ -1,5 +1,5 @@
 // originally retrieved from overpass
-const geoJsonData = {
+const rivers = {
   "type": "FeatureCollection",
   "features": [
     {
@@ -25783,13 +25783,16 @@ const geoJsonData = {
         ]
       },
       "id": "way/742333999"
-    },
+    }
+  ]
+}
+
+const features = {
+  "type": "FeatureCollection",
+  "features": [
     {
       "type": "Feature",
       "properties": {
-        "marker-color": "#7e7e7e",
-        "marker-size": "medium",
-        "marker-symbol": "",
         "name": "Low Force",
         "grade": 3,
         "hazard": "yes",
@@ -25806,9 +25809,6 @@ const geoJsonData = {
     {
       "type": "Feature",
       "properties": {
-        // "marker-color": "#7e7e7e",
-        // "marker-size": "medium",
-        // "marker-symbol": "",
         "grade": 3,
         "featureType": "rapid"
       },
@@ -25823,91 +25823,32 @@ const geoJsonData = {
   ]
 }
 
-// const userGeoJsonTemplate = {
-//   "type": "FeatureCollection",
-//   "features": []
-// }
-//
-// const userGeoJSONKey = 'userGeoJSON'
+mapboxgl.accessToken = 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2s3MGYyaDllMWVmdzNubXZwZTVydGJ5NyJ9.bOoi4juLS82_7BMYrGbdeg';
+var map = new mapboxgl.Map({
+  container: 'map', // container id
+  style: 'mapbox://styles/mapbox/light-v10', // stylesheet location
+  center: [-1.8676757812500002, 54.55972074357376], // starting position
+  zoom: 8 // starting zoom
+});
 
-const lat = 54.55972074357376
-const lon = -1.8676757812500002
-const mymap = L.map('mapid').setView([lat, lon], 13);
-
-const mapbox = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2s3MGYyaDllMWVmdzNubXZwZTVydGJ5NyJ9.bOoi4juLS82_7BMYrGbdeg'
-}).addTo(mymap);
-
-const PopUp = function(properties) {
-  return `<div class='popUp'>
-    <ul>
-       <li>Name: ${properties.name}</li>
-       <li>Type: ${properties.featureType}</li>
-       <li>Grade: ${properties.grade}</li>
-    </ul>
-   </div>`
-}
-
-const layer = L.geoJson(geoJsonData, {
-  onEachFeature: (feature, layer) => {
-    if (feature.properties && feature.geometry.type === 'Point') {
-      layer.bindPopup(PopUp(feature.properties));
-    }
-  }
-}).addTo(mymap)
-
-const regions = L.geoJson({
-  "type": "FeatureCollection",
-  "features": []
-}, {
-  onEachFeature: (feature, layer) => {
-    if (feature.properties && feature.geometry.type === 'Point') {
-      layer.bindPopup(PopUp(feature.properties));
-    }
-  }
-}).addTo(mymap)
-
-const baseMaps = {
-    "Map": mapbox
-};
-
-const overlay = {
-    "Rivers": layer,
-    "Regions": regions
-};
-
-L.control.layers(baseMaps, overlay).addTo(mymap);
-
-// const storedGeoJson = localStorage.getItem(userGeoJSONKey)
-// if (!storedGeoJson) {
-//   console.log('No user GeoJSON found. Creating in localStorage...')
-//   localStorage.setItem(userGeoJSONKey, JSON.stringify(userGeoJsonTemplate))
-//   console.log('Created user GeoJSON in localStorage!')
-// } else {
-//   console.log('Found user GeoJSON in localStorage, adding to map.')
-//   L.geoJson(JSON.parse(storedGeoJson)).addTo(mymap);
-// }
-
-
-// function AddPoint(e) {
-//   console.log(e)
-//   // const existingUserGeoJson = JSON.parse(localStorage.getItem(userGeoJSONKey))
-//   // // TODO if a user deleted localStorage, this bombs.
-//   // existingUserGeoJson.features.push({
-//   // "type": "Feature",
-//   // "geometry": {
-//   //   "type": "Point",
-//   //   "coordinates": [e.latlng.lng, e.latlng.lat]
-//   // }})
-//   // localStorage.setItem(userGeoJSONKey, JSON.stringify(existingUserGeoJson));
-//   // L.geoJson(existingUserGeoJson).addTo(mymap);
-// }
-
-
-// mymap.on('click', AddPoint);
+map.on('load', function () {
+  map.addLayer({
+    id: 'rivers',
+    type: 'line',
+    source: {
+      type: 'geojson',
+      data: rivers
+    },
+    // paint: { } TODO?
+  });
+  map.addLayer({
+    id: 'features',
+    type: 'circle',
+    source: {
+      type: 'geojson',
+      data: features
+    },
+    // paint: { } TODO?
+  });
+})
 
