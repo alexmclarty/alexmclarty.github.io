@@ -25839,7 +25839,7 @@ map.on('load', function () {
       type: 'geojson',
       data: rivers
     },
-    // paint: { } TODO?
+    paint: { }
   });
   map.addLayer({
     id: 'features',
@@ -25848,7 +25848,19 @@ map.on('load', function () {
       type: 'geojson',
       data: features
     },
-    // paint: { } TODO?
+    paint: { }
   });
 })
 
+let popup = new mapboxgl.Popup();
+
+map.on('mousemove', e => {
+  const features = map.queryRenderedFeatures([[0,0], [map.getCanvas().width, map.getCanvas().height]], { layers: ['features'] })
+  let content = ''
+  if (features.length) {
+    content += '<h2>Features</h2><ul>'
+    features.map(feature => content += `<li>${feature.properties.name || ''} grade ${feature.properties.grade} ${feature.properties.featureType}</li>`)
+    content += '</ul>'
+  }
+  document.getElementById('features').innerHTML = content
+})
