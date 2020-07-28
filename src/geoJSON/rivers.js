@@ -1,4 +1,3 @@
-// originally retrieved from overpass
 const rivers = {
   "type": "FeatureCollection",
   "features": [
@@ -25787,80 +25786,4 @@ const rivers = {
   ]
 }
 
-const features = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Low Force",
-        "grade": 3,
-        "hazard": "yes",
-        "featureType": "waterfall"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -2.151489704847336,
-          54.64689781455952
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "grade": 3,
-        "featureType": "rapid"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -2.1510055661201477,
-          54.64626926464677
-        ]
-      }
-    }
-  ]
-}
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2s3MGYyaDllMWVmdzNubXZwZTVydGJ5NyJ9.bOoi4juLS82_7BMYrGbdeg';
-var map = new mapboxgl.Map({
-  container: 'map', // container id
-  style: 'mapbox://styles/mapbox/light-v10', // stylesheet location
-  center: [-1.8676757812500002, 54.55972074357376], // starting position
-  zoom: 8 // starting zoom
-});
-
-map.on('load', function () {
-  map.addLayer({
-    id: 'rivers',
-    type: 'line',
-    source: {
-      type: 'geojson',
-      data: rivers
-    },
-    paint: { }
-  });
-  map.addLayer({
-    id: 'features',
-    type: 'circle',
-    source: {
-      type: 'geojson',
-      data: features
-    },
-    paint: { }
-  });
-})
-
-let popup = new mapboxgl.Popup();
-
-map.on('mousemove', e => {
-  const features = map.queryRenderedFeatures([[0,0], [map.getCanvas().width, map.getCanvas().height]], { layers: ['features'] })
-  let content = ''
-  if (features.length) {
-    content += '<h2>Features</h2><ul>'
-    features.map(feature => content += `<li>${feature.properties.name || ''} grade ${feature.properties.grade} ${feature.properties.featureType}</li>`)
-    content += '</ul>'
-  }
-  document.getElementById('features').innerHTML = content
-})
+export default rivers
