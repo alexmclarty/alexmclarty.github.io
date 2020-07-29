@@ -4,6 +4,7 @@ const features = {
     {
       "type": "Feature",
       "properties": {
+        "id": "1",
         "name": "Low Force",
         "grade": 3,
         "hazard": "yes",
@@ -20,6 +21,7 @@ const features = {
     {
       "type": "Feature",
       "properties": {
+        "id": "2",
         "grade": 3,
         "featureType": "rapid"
       },

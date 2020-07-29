@@ -1,10 +1,70 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import mapboxgl from 'mapbox-gl';
 import rivers from './geoJSON/rivers'
 import features from './geoJSON/features'
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2s3MGYyaDllMWVmdzNubXZwZTVydGJ5NyJ9.bOoi4juLS82_7BMYrGbdeg';
+mapboxgl.accessToken = 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2tkN2Y2c2Z1MDU2ZTJybXN3c2U2OHdjMiJ9.FE28Hzh1Rxb79x1vKr1WpA';
+
+// prop drilling?
+// redux as an alternative. clever global state management.
+// apollo graphql has global state management tooz.
+
+function RiverList(props) {
+    // filter data based on:
+    // "name": "River Tees",
+    // "type": "waterway",
+    // "waterway": "river",
+    const rivers = props?.rivers?.filter(river => river.properties.type === 'waterway')
+    return (
+        <div className='riverListContainer'>
+            <h2>Rivers</h2>
+            <ul>
+                {/*TODO key={river?.properties?.@id}*/}
+                {rivers?.map((river, key) => <River river={river}/>)}
+            </ul>
+        </div>
+    )
+}
+
+function FeatureList(props) {
+    if (props.features.length > 0) {
+        return (
+            <div className='featureListContainer'>
+                <h2>Features</h2>
+                <ul>
+                    {
+                        props.features.map((feature, key) => <Feature feature={feature} key={feature.properties.id}/>)
+                    }
+                </ul>
+            </div>
+        )
+    } else {
+        return null
+    }
+}
+
+function River(props) {
+    return (
+        <li className='river'>
+            {props?.river?.properties?.name}
+        </li>
+    )
+}
+
+function Feature(props) {
+  return (
+      <li className='feature'>
+          {props?.feature?.properties?.name} Grade {props?.feature?.properties?.grade} {props?.feature?.properties?.featureType}
+      </li>
+  );
+}
 
 class Application extends React.Component {
 
@@ -13,15 +73,11 @@ class Application extends React.Component {
             <div>
                 <div className='sidebar'>
                     <h1 id='appTitle'>kayapp</h1>
-                    <div className='sidebarData'>
+                    <div className='mapMetadata'>
                         Longtitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom: {this.state.zoom}
                     </div>
-                    {this.state.features.length > 0 &&
-                        <div className='features'>
-                            <h2>Features</h2>
-                            {JSON.stringify(features)}
-                        </div>
-                    }
+                    <div><RiverList rivers={this.state.rivers}/></div>
+                    <div>{this.state.zoom >= 8 && <FeatureList features={this.state.features}/>}</div>
                 </div>
                 <div ref={el => this.mapContainer = el} className="mapContainer"/>
             </div>
@@ -63,27 +119,24 @@ class Application extends React.Component {
           });
         })
         map.on('move', e => {
+            // TODO There is a bug where features are duplicated.
             const features = map.queryRenderedFeatures([[0,0], [map.getCanvas().width, map.getCanvas().height]], { layers: ['features'] })
-            if (features.length) {
-                this.setState({
-                    features: features.map(feature => ({
-                        name: feature.properties.name
-                    }))
-                })
-            } else {
-                this.setState({
-                    features: []
-                })
-            }
+            const renderedFeatures = features.length ? features : []
+            this.setState({features: renderedFeatures})
+
+            const rivers = map.queryRenderedFeatures([[0,0], [map.getCanvas().width, map.getCanvas().height]], { layers: ['rivers'] })
+            const renderedRivers = rivers.length ? rivers : []
+            this.setState({rivers: renderedRivers})
+
         })
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            lng: 5,
-            lat: 34,
-            zoom: 4,
+            lng: -1.61,
+            lat: 54.6,
+            zoom: 6,
             features: []
         };
     }

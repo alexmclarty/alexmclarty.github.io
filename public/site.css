@@ -27,10 +27,14 @@ body {
     background-color: #404040;
     color: #ffffff;
     z-index: 1 !important;
-    padding: 6px;
+    padding: 1em;
     font-weight: bold;
 }
 
-.sidebarData {
+.mapMetadata {
     font-size: 0.5em;
+}
+
+.features {
+    padding-top: 1em;
 }
