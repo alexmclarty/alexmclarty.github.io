@@ -28,6 +28,7 @@ function RiverList(props) {
             <ul>
                 {/*TODO key={river?.properties?.@id}*/}
                 {rivers?.map((river, key) => <River river={river}/>)}
+
             </ul>
         </div>
     )
@@ -61,7 +62,7 @@ function River(props) {
 function Feature(props) {
   return (
       <li className='feature'>
-          {props?.feature?.properties?.name} Grade {props?.feature?.properties?.grade} {props?.feature?.properties?.featureType}
+          <Link to={`/feature/${props?.feature?.properties?.id}`}>{props?.feature?.properties?.name} Grade {props?.feature?.properties?.grade} {props?.feature?.properties?.featureType}</Link>
       </li>
   );
 }
@@ -70,17 +71,23 @@ class Application extends React.Component {
 
     render () {
         return (
-            <div>
-                <div className='sidebar'>
-                    <h1 id='appTitle'>kayapp</h1>
-                    <div className='mapMetadata'>
-                        Longtitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom: {this.state.zoom}
+            <Router>
+                <div>
+                    <div className='sidebar'>
+                        <h1 id='appTitle'>kayapp</h1>
+                        <div className='mapMetadata'>
+                            Longtitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom: {this.state.zoom}
+                        </div>
+                        <div>
+                            <RiverList rivers={this.state.rivers}/>
+                        </div>
+                        <div>
+                            {this.state.zoom >= 8 && <FeatureList features={this.state.features}/>}
+                        </div>
                     </div>
-                    <div><RiverList rivers={this.state.rivers}/></div>
-                    <div>{this.state.zoom >= 8 && <FeatureList features={this.state.features}/>}</div>
+                    <div ref={el => this.mapContainer = el} className="mapContainer"/>
                 </div>
-                <div ref={el => this.mapContainer = el} className="mapContainer"/>
-            </div>
+            </Router>
         )
     }
 
@@ -119,8 +126,9 @@ class Application extends React.Component {
           });
         })
         map.on('move', e => {
-            // TODO There is a bug where features are duplicated.
+
             const features = map.queryRenderedFeatures([[0,0], [map.getCanvas().width, map.getCanvas().height]], { layers: ['features'] })
+            console.log('features from map', features)
             const renderedFeatures = features.length ? features : []
             this.setState({features: renderedFeatures})
 
