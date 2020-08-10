@@ -4,6 +4,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  useParams,
   Link
 } from "react-router-dom";
 import mapboxgl from 'mapbox-gl';
@@ -60,7 +61,10 @@ function River(props) {
 }
 
 function Feature(props) {
-  return (
+    // use redux to get the feature?
+    let { featureId } = useParams();
+    console.log(featureId)
+    return (
       <li className='feature'>
           <Link to={`/feature/${props?.feature?.properties?.id}`}>{props?.feature?.properties?.name} Grade {props?.feature?.properties?.grade} {props?.feature?.properties?.featureType}</Link>
       </li>
@@ -78,12 +82,23 @@ class Application extends React.Component {
                         <div className='mapMetadata'>
                             Longtitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom: {this.state.zoom}
                         </div>
-                        <div>
-                            <RiverList rivers={this.state.rivers}/>
-                        </div>
-                        <div>
-                            {this.state.zoom >= 8 && <FeatureList features={this.state.features}/>}
-                        </div>
+                        <Switch>
+                            <Route path='/feature/:featureId'>
+                                {(props) => {
+                                    console.log(props)
+                                    return null
+                                }}
+                                {/*<Feature feature={this.state.features.filter(feature => feature?.properties?.id == featureId)}/>*/}
+                            </Route>
+                            <Route path="/">
+                                <div>
+                                    <RiverList rivers={this.state.rivers}/>
+                                </div>
+                                <div>
+                                    {this.state.zoom >= 8 && <FeatureList features={this.state.features}/>}
+                                </div>
+                            </Route>
+                        </Switch>
                     </div>
                     <div ref={el => this.mapContainer = el} className="mapContainer"/>
                 </div>

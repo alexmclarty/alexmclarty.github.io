@@ -14,18 +14,14 @@ Hacky POC experimenting with GeoJSON.
 - Load into https://geojson.io
 - Remove features
 - Add Feature properties to GeoJSON
+- TODO adding id value into feature for uniqueness
 - Add into array (currently hardcoded)
 
 ## Getting data
 
-https://overpass-turbo.eu has  cryptic syntax.
+https://overpass-turbo.eu has cryptic syntax.
 
-This Python script uses Nomanatim to get a boundary: 
-
-https://github.com/KaartGroup/localModelScripts/tree/master/get_country_boundary
-
-
-
+This Python script uses Nomanatim to get a boundary: https://github.com/KaartGroup/localModelScripts/tree/master/get_country_boundary
 
 # TODO
 
@@ -67,19 +63,19 @@ https://github.com/KaartGroup/localModelScripts/tree/master/get_country_boundary
     - Use CEH catchment area data, overlay for river
     - Display weather information for catchment area
     - User journal
-    - Check-in
+    - Check-ins?
         - Duration
-        - Difficulty
+        - Personal difficulty?
         - River level calibration
-- Weather
-- Catchment
-    - si
+            - e.g., "scrape/low/medium/high/flood"
+- Weather data
+    - Met Office?
 
 # Assumptions
 
 - Most users won't want to add features.
 - Most users will want to view Rivers, RiverSections and RiverFeatures.
-- You'd need an approval process for adding features if users wanted to do this:
+- To add features you'd need an approval process/admin to avoid:
     - duplicates
     - mistakes
     - spam
