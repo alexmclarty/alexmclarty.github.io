@@ -25854,7 +25854,8 @@ map.on('load', function () {
 
 let popup = new mapboxgl.Popup();
 
-map.on('mousemove', e => {
+map.on('style.load', () => {
+  map.on('mousemove', e => {
   const features = map.queryRenderedFeatures([[0,0], [map.getCanvas().width, map.getCanvas().height]], { layers: ['features'] })
   let content = ''
   if (features.length) {
@@ -25864,3 +25865,6 @@ map.on('mousemove', e => {
   }
   document.getElementById('features').innerHTML = content
 })
+})
+
+
