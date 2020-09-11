@@ -25823,7 +25823,7 @@ const features = {
   ]
 }
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2s3MGYyaDllMWVmdzNubXZwZTVydGJ5NyJ9.bOoi4juLS82_7BMYrGbdeg';
+mapboxgl.accessToken = 'pk.eyJ1IjoiaGFydmV5cG9va2EiLCJhIjoiY2tleWJqMzk2MDlmdDJ6bzIzMDlybjN4ayJ9.f7NOdQXcl0gJCMJhYvRz8w';
 var map = new mapboxgl.Map({
   container: 'map', // container id
   style: 'mapbox://styles/mapbox/light-v10', // stylesheet location
